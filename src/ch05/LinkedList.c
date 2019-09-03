@@ -4,7 +4,7 @@
 #include<stdio.h>
 #include<assert.h>
 
-#include "ArrayList.h"
+#include "LinkedList.h"
 
 /** 
  * 리스트 생성 함수
@@ -12,28 +12,40 @@
  * 해당 리스트를 생성합니다. 동적 배열의 크기는 8입니다.
  */ 
 void LInit(List * pList){
-    pList->arr = malloc(sizeof(LData) * INIT_SIZE);
+    pList->head = (Node *) malloc(sizeof(Node));
+    pList->head->data = -123456;
+
+    pList->tail = (Node *) malloc(sizeof(Node));
+    pList->tail->data = -123456;
+
+    pList->tail->next = NULL;
+    pList->head->next = pList->tail;
+
     pList->size = 0;
-    pList->capacity = INIT_SIZE;
 }
 
 /**
  * 리스트 제거 함수
  * @ param pList List * 리스트의 주소.
- * 해당 리스트를 제거합니다. `arr`의 경우 동적 배열이기 때문에 주소가 들어 있다면, 해제해야 합니다.
+ * 해당 리스트를 제거합니다. 
  */
 void LDestroy(List * pList){
-    if (pList == NULL) {
-        return;
+
+    while (pList->size > 0) {
+        LRemoveHeader(pList);
     }
 
-    if (pList->arr != NULL) {
-        free(pList->arr);
-        pList->arr = NULL;
+    if (pList->head != NULL) {
+        free(pList->head);
+        pList->head = NULL;
     }
-
+    
+    if (pList->tail != NULL) {
+        free(pList->tail);
+        pList->tail = NULL;
+    }
+    
     pList->size = 0;
-    pList->capacity = 0;
 }
 
 /**
@@ -50,8 +62,13 @@ LData LGet(List * pList, int index){
         assert(index < pList->size);
     }
 
-    LData ret = pList->arr[index];
-    return ret;
+    Node * curr = pList->head->next;
+
+    for (int i=0; i<index; i++) {
+        curr = curr->next;
+    }
+
+    return curr->data;
 }
 
 /**
@@ -68,7 +85,13 @@ void LSet(List * pList, int index, LData data){
         assert(index < pList->size);
     }
 
-    pList->arr[index] = data;
+    Node * curr = pList->head->next;
+
+    for (int i=0; i<index; i++) {
+        curr = curr->next;
+    }
+
+    curr->data = data;
 }
 
 /**
@@ -82,25 +105,6 @@ int LSize(List * pList){
     return pList->size;
 }
 
-/**
- * 리스트 리사이즈 함수
- * @ param pList List * 리스트의 주소. 
- * 
- * 현재 가진 배열보다, 2배 큰 동적 배열을 새로이 할당 받습니다.
- */
-void resize(List * pList) {
-    pList->capacity *= 2;
-
-    LData * del = pList->arr;
-    LData * tmp = malloc(sizeof(LData) * (pList->capacity));
-
-    for (int i=0; i<pList->size; i++) {
-        tmp[i] = pList->arr[i];
-    }
-
-    pList->arr = tmp;
-    free(del);
-}
 
 /**
  * 리스트 머리 삽입 함수
@@ -110,15 +114,11 @@ void resize(List * pList) {
  * 현재 리스트의 첫 부분에 데이터를 넣습니다.
  */
 void LInsertHeader(List * pList, LData data){
-    if (pList->size == pList->capacity){
-        resize(pList);
-    }
+    Node * newNode = (Node *) malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = pList->head->next;
+    pList->head->next = newNode;
 
-    for (int i=pList->size-1; i>=0; i--) {
-        pList->arr[i+1] = pList->arr[i];
-    }
-
-    pList->arr[0] = data;
     pList->size += 1;
 }
 
@@ -136,15 +136,25 @@ void LInsertIndex(List * pList, int index, LData data){
         assert(index < pList->size);
     }
 
-    if (pList->size == pList->capacity){
-        resize(pList);
+    if (index == 0) {
+        return LInsertHeader(pList, data);
     }
 
-    for (int i=pList->size-1; i>=index; i--) {
-        pList->arr[i+1] = pList->arr[i];
+    if (index == pList->size - 1) {
+        return LInsertTail(pList, data);
     }
 
-    pList->arr[index] = data;
+    Node * curr = pList->head->next;
+
+    for (int i=0; i<index-1; i++) {
+        curr = curr->next;
+    }
+
+    Node * newNode = (Node *) malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = curr->next;
+    curr->next = newNode;
+
     pList->size += 1;
 }
 
@@ -156,11 +166,21 @@ void LInsertIndex(List * pList, int index, LData data){
  * 현재 리스트의 마지막 부분에 데이터를 넣습니다.
  */
 void LInsertTail(List * pList, LData data){
-    if (pList->size == pList->capacity){
-        resize(pList);
+    Node * curr = pList->head->next;
+
+    while (curr != pList->tail && curr->next != pList->tail) {
+        curr = curr->next;
     }
 
-    pList->arr[pList->size] = data;
+    Node * newNode = (Node *) malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = pList->tail;
+
+    if (curr == pList->tail) {
+        pList->head->next = newNode;
+    } else {
+        curr->next = newNode;
+    }
     pList->size += 1;
 }
 
@@ -178,11 +198,11 @@ LData LRemoveHeader(List * pList){
         assert(pList->size > 0);
     }
 
-    LData ret = pList->arr[0];
+    Node * del = pList->head->next;
+    pList->head->next = del->next;
 
-    for (int i=1; i<pList->size; i++) {
-        pList->arr[i-1] = pList->arr[i];
-    }
+    LData ret = del->data;
+    free(del);
 
     pList->size -= 1;
     return ret;
@@ -208,11 +228,25 @@ LData LRemoveIndex(List * pList, int index){
         assert(index < pList->size);
     }
 
-    LData ret = pList->arr[index];
-
-    for (int i=index + 1; i<pList->size; i++) {
-        pList->arr[i-1] = pList->arr[i];
+    if (index == 0) {
+        return LRemoveHeader(pList);
     }
+
+    if (index == pList->size - 1) {
+        return LRemoveTail(pList);
+    }
+
+    Node * curr = pList->head->next;
+
+    for (int i=0; i<index-1; i++) {
+        curr = curr->next;
+    }
+
+    Node * del = curr->next;
+    curr->next = curr->next->next;
+
+    LData ret = del->data;
+    free(del);
 
     pList->size -= 1;
     return ret;
@@ -232,9 +266,24 @@ LData LRemoveTail(List * pList){
         assert(pList->size > 0);
     }
     
-    LData ret = pList->arr[pList->size-1];
+    Node * curr = pList->head->next;
+    Node * prev = NULL;
 
+    while (curr != pList->tail && curr->next != pList->tail) {
+        prev = curr;
+        curr = curr->next;
+    }
+
+    Node * del = curr;
+    LData ret = del->data;
+
+    if (prev == NULL) {
+        pList->head->next = pList->tail;
+    } else {
+        prev->next = curr->next;
+    }
+    
+    free(del);
     pList->size -= 1;
-
     return ret;
 }
