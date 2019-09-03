@@ -173,6 +173,11 @@ void LInsertTail(List * pList, LData data){
  * return LData 머리 부분에 데이터
  */
 LData LRemoveHeader(List * pList){
+    if (pList->size <= 0) {
+        printf("List Empty Exception\n");
+        assert(pList->size > 0);
+    }
+
     LData ret = pList->arr[0];
 
     for (int i=1; i<pList->size; i++) {
@@ -193,6 +198,11 @@ LData LRemoveHeader(List * pList){
  * return LData 인덱스 부분에 데이터
  */
 LData LRemoveIndex(List * pList, int index){
+    if (pList->size <= 0) {
+        printf("List Empty Exception\n");
+        assert(pList->size > 0);
+    }
+
     if (index >= pList->size) {
         printf("Index Out of Bound Exception\n");
         assert(index < pList->size);
@@ -217,6 +227,11 @@ LData LRemoveIndex(List * pList, int index){
  * return LData 마지막 부분에 데이터
  */
 LData LRemoveTail(List * pList){
+    if (pList->size <= 0) {
+        printf("List Empty Exception\n");
+        assert(pList->size > 0);
+    }
+    
     LData ret = pList->arr[pList->size-1];
 
     pList->size -= 1;
