@@ -136,6 +136,14 @@ void LInsertIndex(List * pList, int index, LData data){
         assert(index < pList->size);
     }
 
+    if (index == 0) {
+        return LInsertHeader(pList, data);
+    }
+
+    if (index == pList->size - 1) {
+        return LInsertTail(pList, data);
+    }
+
     Node * curr = pList->head->next;
 
     for (int i=0; i<index-1; i++) {
@@ -218,6 +226,14 @@ LData LRemoveIndex(List * pList, int index){
     if (index >= pList->size) {
         printf("Index Out of Bound Exception\n");
         assert(index < pList->size);
+    }
+
+    if (index == 0) {
+        return LRemoveHeader(pList);
+    }
+
+    if (index == pList->size - 1) {
+        return LRemoveTail(pList);
     }
 
     Node * curr = pList->head->next;
