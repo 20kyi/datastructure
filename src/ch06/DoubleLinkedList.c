@@ -4,7 +4,7 @@
 #include<stdio.h>
 #include<assert.h>
 
-#include "LinkedList.h"
+#include "DoubleLinkedList.h"
 
 /** 
  * 리스트 생성 함수
@@ -12,14 +12,22 @@
  * 해당 리스트를 생성합니다. 
  */ 
 void LInit(List * pList){
-    pList->head = (Node *) malloc(sizeof(Node));
-    pList->head->data = -123456;
-
-    pList->tail = (Node *) malloc(sizeof(Node));
-    pList->tail->data = -123456;
-
-    pList->tail->next = NULL;
-    pList->head->next = pList->tail;
+    // head 더미 노드 생성
+    Node * head = (Node *) malloc(sizeof(Node));
+    head->data = -123456;
+    head->prev = NULL;
+    head->next = NULL;
+    // tail 더미 노드 생성
+    Node * tail = (Node *) malloc(sizeof(Node));
+    tail->data = -123456;
+    tail->prev = NULL;
+    tail->next = NULL;
+    // head <-> tail 연결
+    head->next = tail;
+    tail->prev = head;
+    // 연결 리스트의 해당 노드들 연결
+    pList->head = head;
+    pList->tail = tail;
 
     pList->size = 0;
 }
@@ -116,7 +124,10 @@ int LSize(List * pList){
 void LInsertHeader(List * pList, LData data){
     Node * newNode = (Node *) malloc(sizeof(Node));
     newNode->data = data;
+    newNode->prev = pList->head;
     newNode->next = pList->head->next;
+
+    pList->head->next->prev = newNode;
     pList->head->next = newNode;
 
     pList->size += 1;
@@ -152,7 +163,10 @@ void LInsertIndex(List * pList, int index, LData data){
 
     Node * newNode = (Node *) malloc(sizeof(Node));
     newNode->data = data;
+    newNode->prev = curr;
     newNode->next = curr->next;
+
+    curr->next->prev = newNode;
     curr->next = newNode;
 
     pList->size += 1;
@@ -166,21 +180,15 @@ void LInsertIndex(List * pList, int index, LData data){
  * 현재 리스트의 마지막 부분에 데이터를 넣습니다.
  */
 void LInsertTail(List * pList, LData data){
-    Node * curr = pList->head->next;
-
-    while (curr != pList->tail && curr->next != pList->tail) {
-        curr = curr->next;
-    }
-
+    
     Node * newNode = (Node *) malloc(sizeof(Node));
     newNode->data = data;
+    newNode->prev = pList->tail->prev;
     newNode->next = pList->tail;
 
-    if (curr == pList->tail) {
-        pList->head->next = newNode;
-    } else {
-        curr->next = newNode;
-    }
+    pList->tail->prev->next = newNode;
+    pList->tail->prev = newNode;
+    
     pList->size += 1;
 }
 
@@ -199,9 +207,13 @@ LData LRemoveHeader(List * pList){
     }
 
     Node * del = pList->head->next;
-    pList->head->next = del->next;
-
     LData ret = del->data;
+    // 삭제 노드 전 후로, 노드 연결
+    del->prev->next = del->next;
+    del->next->prev = del->prev;
+    del->prev = NULL;
+    del->next = NULL;
+    // 노드 삭제
     free(del);
 
     pList->size -= 1;
@@ -243,9 +255,13 @@ LData LRemoveIndex(List * pList, int index){
     }
 
     Node * del = curr->next;
-    curr->next = curr->next->next;
-
     LData ret = del->data;
+
+    del->prev->next = del->next;
+    del->next->prev = del->prev;
+    del->prev = NULL;
+    del->next = NULL;
+
     free(del);
 
     pList->size -= 1;
@@ -266,24 +282,16 @@ LData LRemoveTail(List * pList){
         assert(pList->size > 0);
     }
     
-    Node * curr = pList->head->next;
-    Node * prev = NULL;
-
-    while (curr != pList->tail && curr->next != pList->tail) {
-        prev = curr;
-        curr = curr->next;
-    }
-
-    Node * del = curr;
+    Node * del = pList->tail->prev;
     LData ret = del->data;
 
-    if (prev == NULL) {
-        pList->head->next = pList->tail;
-    } else {
-        prev->next = curr->next;
-    }
-    
+    del->prev->next = del->next;
+    del->next->prev = del->prev;
+    del->prev = NULL;
+    del->next = NULL;
+
     free(del);
+
     pList->size -= 1;
     return ret;
 }
