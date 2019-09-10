@@ -43,7 +43,7 @@ int getOperationPriority(char operator) {
  * 
  * return int 연산자1이 연산자2의 우선순위보다 높거나 같으면 1 아니면 0
  */ 
-int compareOperation(char op1, char op2) {
+int isPrioirty(char op1, char op2) {
     int op1Priority = getOperationPriority(op1);
     int op2Priority = getOperationPriority(op2);
     return op1Priority >= op2Priority;
@@ -74,11 +74,16 @@ char * ConvertExpressionInfixToPostfix(char infixExp[]){
         if (isdigit(data)) {
             postfixExp[offset] = data;
             offset += 1;
-        } 
-        else if (data == '(') {
+        } else if (data == '(') {
             SPush(&stack, pData);
         } else if ( data == ')') {
-            while(*((char *) SPeek(&stack)) != '(') {
+            while(1) {
+                char peek = *((char *) SPeek(&stack));
+
+                if (peek == '(') {
+                    break;
+                }
+
                 char * pop = (char *) SPop(&stack);
                 postfixExp[offset] = *pop;
                 offset += 1;
@@ -86,7 +91,13 @@ char * ConvertExpressionInfixToPostfix(char infixExp[]){
 
             SPop(&stack);
         } else {
-            while (!SIsEmpty(&stack) && compareOperation(*((char *) SPeek(&stack)), data) ){
+            while (!SIsEmpty(&stack)){
+                char peek = *((char *) SPeek(&stack));
+
+                if (!isPrioirty(peek, data) ) {
+                    break;
+                }
+
                 char * pop = (char *) SPop(&stack);
                 postfixExp[offset] = *pop;
                 offset += 1;

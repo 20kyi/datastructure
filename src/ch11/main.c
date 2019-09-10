@@ -11,7 +11,7 @@ int main() {
     scanf("%s", input);
     
     char * postfixExp = ConvertExpressionInfixToPostfix(input);
-    BinaryTreeNode * expTree = MaekExpTree(postfixExp);
+    BinaryTreeNode * expTree = MakeExpressionTree(postfixExp);
     
     printf("Show Prefix : ");
     ShowPrefixTypeExp(expTree);
@@ -25,7 +25,7 @@ int main() {
     ShowPostfixTypeExp(expTree);
     printf("\n");
 
-    int result = EvaluateExpTree(expTree);
+    int result = EvaluateExpressionTree(expTree);
     printf("result: %d\n", result);
 
     DestroyExpressionTree(expTree);

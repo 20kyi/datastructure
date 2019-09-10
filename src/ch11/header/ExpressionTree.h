@@ -3,8 +3,8 @@
 
 #include "BinaryTree.h"
 
-BinaryTreeNode * MaekExpTree(char exp[]);
-int EvaluateExpTree(BinaryTreeNode * bt);
+BinaryTreeNode * MakeExpressionTree(char exp[]);
+int EvaluateExpressionTree(BinaryTreeNode * bt);
 
 void ShowPrefixTypeExp(BinaryTreeNode * bt);
 void ShowInfixTypeExp(BinaryTreeNode * bt);

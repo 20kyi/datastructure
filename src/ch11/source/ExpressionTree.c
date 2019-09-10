@@ -6,7 +6,7 @@
 #include <string.h>
 #include <ctype.h>
 
-BinaryTreeNode * MaekExpTree(char exp[]) {
+BinaryTreeNode * MakeExpressionTree(char exp[]) {
     Stack stack;
     SInit(&stack);
 
@@ -34,7 +34,7 @@ BinaryTreeNode * MaekExpTree(char exp[]) {
     return expTree;
 }
 
-int EvaluateExpTree(BinaryTreeNode * bt) {
+int EvaluateExpressionTree(BinaryTreeNode * bt) {
 
     BinaryTreeNode * left = GetLeftSubTree(bt);
     BinaryTreeNode * right = GetRightSubTree(bt);
@@ -43,8 +43,8 @@ int EvaluateExpTree(BinaryTreeNode * bt) {
         return GetData(bt);
     }
 
-    int op1 = EvaluateExpTree(left);
-    int op2 = EvaluateExpTree(right);
+    int op1 = EvaluateExpressionTree(left);
+    int op2 = EvaluateExpressionTree(right);
     char operator = GetData(bt);
 
     switch (operator)
