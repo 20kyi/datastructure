@@ -47,7 +47,7 @@ void MergeSort(int arr[], int start, int end) {
     int mid = (start + end) / 2;
     
     MergeSort(arr, start, mid);
-    MergeSort(arr, mid+1, end);
+    MergeSort(arr, mid + 1, end);
 
     Merge(arr, start, mid, end);
 }
@@ -63,7 +63,7 @@ int main() {
     }
     printf("\n");
 
-    MergeSort(arr, 0, size);
+    MergeSort(arr, 0, size-1);
 
     printf("정렬 후 : ");
     for (int i=0; i<size; i++) {
