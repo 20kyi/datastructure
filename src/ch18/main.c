@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 void Swap(int arr[], int i, int j) {
     int temp = arr[i];
@@ -13,11 +12,11 @@ int Partition(int arr[], int left, int right) {
     int high = right;
 
     while (low <= high) {
-        while (pivot > arr[low]){
+        while (low <= right && pivot > arr[low]){
             low += 1;
         }
 
-        while(pivot < arr[high]) {
+        while(high >= left + 1 && pivot < arr[high]) {
             high -= 1;
         }
 
@@ -35,7 +34,7 @@ void QuickSort(int arr[], int start, int end) {
     if (start > end) {
         return;
     }
-    
+
     int pivot = Partition(arr, start, end);
     QuickSort(arr, start, pivot-1);
     QuickSort(arr, pivot + 1, end);
@@ -53,7 +52,7 @@ int main() {
     printf("\n");
 
     QuickSort(arr, 0, size-1);
-
+    
     printf("정렬 후 : ");
     for (int i=0; i<size; i++) {
         printf("%d ", arr[i]);
