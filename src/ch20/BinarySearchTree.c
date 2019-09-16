@@ -14,7 +14,6 @@ void BSTDestroy(BinarySearchTree * pBst) {
 }
 
 void BSTInsert(BinarySearchTree * pBst, BSTData data) {
-    
     BinaryTreeNode * new = MakeBinaryTreeNode();
     SetData(new, data);
     BinaryTreeNode * curr = pBst->root;
@@ -47,11 +46,8 @@ int BSTRemove(BinarySearchTree * pBst, BSTData target) {
     BinaryTreeNode * pVRoot = MakeBinaryTreeNode();
     BinaryTreeNode * parent = pVRoot;
     BinaryTreeNode * curr = pBst->root;
-
-    BinaryTreeNode * del;
-
     ChangeRightSubTree(pVRoot, pBst->root);
-
+    
     while ( (curr != NULL) && (pBst->compare(GetData(curr), target) != 0) ){
         parent = curr;
         curr = (pBst->compare(target, GetData(curr)) < 0) ? GetLeftSubTree(curr) : GetRightSubTree(curr);
@@ -61,9 +57,10 @@ int BSTRemove(BinarySearchTree * pBst, BSTData target) {
         return 0;
     }
 
-    del = curr;
+    BinaryTreeNode * del = curr;
 
     if (GetLeftSubTree(del) == NULL && GetRightSubTree(del) == NULL) {
+        
         if (GetLeftSubTree(parent) == del) {
             RemoveLeftSubTree(parent);
         } else {
@@ -98,13 +95,13 @@ int BSTRemove(BinarySearchTree * pBst, BSTData target) {
         del = alternateNode;
         SetData(del, delData);
     }
-
+    
     if (GetRightSubTree(pVRoot) != pBst->root) {
         pBst->root = GetRightSubTree(pVRoot);
     }
 
     free(pVRoot);
-    free(del);
+    free(del);    
     return 1;
 }
 

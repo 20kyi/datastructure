@@ -16,7 +16,7 @@ void ShowData(BSTData pData) {
 int main() {
 
     int insert[] = { 5, 8, 1, 6, 4, 9, 3, 2, 7 };
-    int target[] = { 3, 8, 1, 6 };
+    int target[] = { 5, 2, 9, 3, 8, 1, 6, 4, 7 };
     int insertSize = sizeof(insert) / sizeof(insert[0]);
     int targetSize = sizeof(target) / sizeof(target[0]);
 
@@ -49,7 +49,7 @@ int main() {
         } else {
             printf("삭제 성공 : %d\n", target[i]);
         }
-        
+
         printf("트리 상태 : ");
         BSTShowAll(&bst, ShowData);
         printf("\n");

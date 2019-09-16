@@ -181,7 +181,9 @@ BinaryTreeNode * RemoveLeftSubTree(BinaryTreeNode * bt) {
         return NULL;
     }
 
-    return bt->left;
+    BinaryTreeNode * del = bt->left;
+    bt->left = NULL;
+    return del;
 }
 
 BinaryTreeNode * RemoveRightSubTree(BinaryTreeNode * bt) {
@@ -189,7 +191,9 @@ BinaryTreeNode * RemoveRightSubTree(BinaryTreeNode * bt) {
         return NULL;
     }
 
-    return bt->right;
+    BinaryTreeNode * del = bt->right;
+    bt->right = NULL;
+    return del;
 }
 
 void ChangeLeftSubTree(BinaryTreeNode * main, BinaryTreeNode * sub) {
