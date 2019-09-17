@@ -6,7 +6,6 @@
 #define TABLE_LENGTH 10
 
 typedef int HashFunc(Key key);
-typedef int KeyCompareFunc(Key k1, Key k2);
 
 typedef struct _table{
     Slot table[TABLE_LENGTH];
