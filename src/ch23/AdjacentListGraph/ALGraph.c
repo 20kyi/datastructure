@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <assert.h>
+#include <stdio.h>
 
 #include "ALGraph.h"
 
@@ -27,52 +28,67 @@ void GDestroy(Graph * pGraph) {
     free(pGraph->adjList);
 }
 
-void GAddEdge(Graph * pGraph, Vertex * from, Vertex * to) {
-    int fromV = from->where;
-    int toV = to->where;
+void GAddEdge(Graph * pGraph, int from, int to) {
+    if (GIsConnected(pGraph, from, to)) {
+        return;
+    }
+    
+    int * pFrom = (int *) malloc( sizeof(int) );
+    int * pTo = (int *) malloc( sizeof(int) );
 
-    LInsertTail(&(pGraph->adjList[fromV]), to); 
-    LInsertTail(&(pGraph->adjList[toV]), from);
+    *pFrom = from;
+    *pTo = to;
+
+    LInsertTail(&(pGraph->adjList[from]), pTo); 
+    LInsertTail(&(pGraph->adjList[to]), pFrom);
 
     pGraph->numberOfEdge += 1; 
 }
 
-int GDeleteEdge(Graph * pGraph, Vertex * from, Vertex * to) {
-    int fromV = from->where;
-    int toV = to->where;
-
-    List * connectedVertexList = &(pGraph->adjList[fromV]);
+int GDeleteEdge(Graph * pGraph, int from, int to) {
+    List * connectedVertexList = &(pGraph->adjList[from]);
     int size = LSize(connectedVertexList);
+    
+    if (!GIsConnected(pGraph, from ,to)) {
+        return 0;
+    }
 
     for (int i=0; i<size; i++) {
-        Vertex * data = (Vertex *) LGet(connectedVertexList, i);
-        if (data->where == toV) {
+        int vertex =  *((int *) LGet(connectedVertexList, i));
+        
+        if (vertex == to) {
             LRemoveIndex(connectedVertexList, i);
             break;
         }
     }
 
-    connectedVertexList = &(pGraph->adjList[toV]);
+    connectedVertexList = &(pGraph->adjList[to]);
     size = LSize(connectedVertexList);
 
     for (int i=0; i<size; i++) {
-        Vertex * data = (Vertex *) LGet(connectedVertexList, i);
-        if (data->where == fromV) {
+        int vertex =  *((int *) LGet(connectedVertexList, i));
+        
+        if (vertex == from) {
             LRemoveIndex(connectedVertexList, i);
             break;
         }
     }
 
     pGraph->numberOfEdge -= 1;
+    return 1;
 }
 
-void GShowVertexInfo(Graph * pGraph, int where, ShowVertex show) {
-    assert(where < pGraph->numberOfVertex);
-    List * connectedVertexList = &(pGraph->adjList[where]);
+int GIsConnected(Graph * pGraph, int from, int to) {
+    List * connectedVertexList = &(pGraph->adjList[to]);
     int size = LSize(connectedVertexList);
+
+    for (int i=0; i<size; i++) {
+        int vertex = *((int *) LGet(connectedVertexList, i));
         
-    for (int j=0; j<size; j++) {
-        Vertex * v = (Vertex *) LGet(connectedVertexList, j);
-        show(*v);
-    }    
+        if (vertex == from) {
+            return 1;
+        }
+    }
+
+    return 0;
 }

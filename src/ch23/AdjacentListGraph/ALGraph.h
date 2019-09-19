@@ -3,15 +3,6 @@
 
 #include "DoubleLinkedList.h"
 
-typedef void * VData;
-
-typedef struct _vertex {
-    int where;
-    VData data;
-} Vertex;
-
-typedef void ShowVertex(Vertex v);
-
 typedef struct _adjacent_list_graph {
     int numberOfVertex;
     int numberOfEdge;
@@ -22,8 +13,8 @@ typedef ALGraph Graph;
 
 void GInit(Graph * pGraph, int numberOfVertex);
 void GDestroy(Graph * pGraph);
-void GAddEdge(Graph * pGraph, Vertex * from, Vertex * to);
-int GDeleteEdge(Graph * pGraph, Vertex * from, Vertex * to);
-void GShowVertexInfo(Graph * pGraph, int where, ShowVertex show);
+void GAddEdge(Graph * pGraph, int from, int to);
+int GDeleteEdge(Graph * pGraph, int from, int to);
+int GIsConnected(Graph * pGraph, int from, int to);
 
 #endif // !__ADJACENT_LIST
