@@ -46,7 +46,11 @@ int main() {
     GAddEdge( &graph, &(vertexList[4]), &(vertexList[0]) );  // E - A
 
     showGraphInfo(&graph, vertexList);
+    
+    GDeleteEdge(&graph, &(vertexList[4]), &(vertexList[0]));
 
+    showGraphInfo(&graph, vertexList);
+    
     GDestroy(&graph);
     free(vertexList);
     return 0;

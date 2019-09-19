@@ -47,6 +47,10 @@ int main() {
 
     showGraphInfo(&graph, vertexList);
 
+    GDeleteEdge(&graph, &(vertexList[4]), &(vertexList[0]));
+
+    showGraphInfo(&graph, vertexList);
+
     GDestroy(&graph);
     free(vertexList);
     return 0;

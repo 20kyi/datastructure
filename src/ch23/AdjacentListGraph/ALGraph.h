@@ -23,6 +23,7 @@ typedef ALGraph Graph;
 void GInit(Graph * pGraph, int numberOfVertex);
 void GDestroy(Graph * pGraph);
 void GAddEdge(Graph * pGraph, Vertex * from, Vertex * to);
+int GDeleteEdge(Graph * pGraph, Vertex * from, Vertex * to);
 void GShowVertexInfo(Graph * pGraph, int where, ShowVertex show);
 
 #endif // !__ADJACENT_LIST

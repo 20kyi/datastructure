@@ -28,7 +28,6 @@ void GDestroy(Graph * pGraph) {
 }
 
 void GAddEdge(Graph * pGraph, Vertex * from, Vertex * to) {
-
     int fromV = from->where;
     int toV = to->where;
 
@@ -36,6 +35,35 @@ void GAddEdge(Graph * pGraph, Vertex * from, Vertex * to) {
     LInsertTail(&(pGraph->adjList[toV]), from);
 
     pGraph->numberOfEdge += 1; 
+}
+
+int GDeleteEdge(Graph * pGraph, Vertex * from, Vertex * to) {
+    int fromV = from->where;
+    int toV = to->where;
+
+    List * connectedVertexList = &(pGraph->adjList[fromV]);
+    int size = LSize(connectedVertexList);
+
+    for (int i=0; i<size; i++) {
+        Vertex * data = (Vertex *) LGet(connectedVertexList, i);
+        if (data->where == toV) {
+            LRemoveIndex(connectedVertexList, i);
+            break;
+        }
+    }
+
+    connectedVertexList = &(pGraph->adjList[toV]);
+    size = LSize(connectedVertexList);
+
+    for (int i=0; i<size; i++) {
+        Vertex * data = (Vertex *) LGet(connectedVertexList, i);
+        if (data->where == fromV) {
+            LRemoveIndex(connectedVertexList, i);
+            break;
+        }
+    }
+
+    pGraph->numberOfEdge -= 1;
 }
 
 void GShowVertexInfo(Graph * pGraph, int where, ShowVertex show) {
