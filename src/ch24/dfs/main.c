@@ -86,5 +86,6 @@ int main () {
 
     memset(visitInfo, 0, sizeof(int) * NUMBER_OF_VERTEX);
     DFSWithRecursion(graph, visitInfo, 0);
+    printf("\n");
     return 0;
 }
