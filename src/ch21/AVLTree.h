@@ -19,6 +19,4 @@ int AVLTSearch(AVLTree * pTree, AVLData target);
 
 void AVLTShowAll(AVLTree * pTree, TraversalFuctionPtr action);
 
-int getHeight(BinaryTreeNode * pTree);
-
 #endif
