@@ -89,6 +89,13 @@ BinaryTreeNode * rotateRL (BinaryTreeNode * pTree) {
 }
 
 BinaryTreeNode * rebalance(BinaryTreeNode * root) {
+    if (root == NULL) {
+        return NULL;
+    }
+
+    root->left = rebalance(root->left);
+    root->right = rebalance(root->right);
+
     int heightDiff = getHeightDifferent(root);
 
     if (heightDiff > 1) {
