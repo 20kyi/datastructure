@@ -37,7 +37,6 @@ void AVLTShowAll(AVLTree * pTree, TraversalFuctionPtr action) {
 }
 
 //private
-
 int getHeight(BinaryTreeNode * pTree) {
     if (pTree == NULL) {
         return 0;
@@ -78,14 +77,14 @@ BinaryTreeNode * rotateLR (BinaryTreeNode * pTree) {
     BinaryTreeNode * parent = pTree;
     BinaryTreeNode * child = GetLeftSubTree(parent);
     ChangeLeftSubTree(parent, rotateRR(child)); //부분 RR회전
-    return rotateLL(child); //LL회전     
+    return rotateLL(parent); //LL회전     
 }
 
 BinaryTreeNode * rotateRL (BinaryTreeNode * pTree) {
     BinaryTreeNode * parent = pTree;
     BinaryTreeNode * child = GetLeftSubTree(parent);
     ChangeRightSubTree(parent, rotateLL(child)); //부분 LL회전
-    return rotateRR(child); //RR 회전
+    return rotateRR(parent); //RR 회전
 }
 
 BinaryTreeNode * rebalance(BinaryTreeNode * root) {
@@ -95,25 +94,18 @@ BinaryTreeNode * rebalance(BinaryTreeNode * root) {
 
     root->left = rebalance(root->left);
     root->right = rebalance(root->right);
-
     int heightDiff = getHeightDifferent(root);
 
+    if (-1 <= heightDiff && heightDiff <= 1) {
+        return root;
+    }
+
     if (heightDiff > 1) {
-        if (getHeightDifferent(GetLeftSubTree(root)) > 0) {
-            root = rotateLL(root);
-        } else {
-            root = rotateLR(root);
-        }
+        root = ((getHeightDifferent(GetLeftSubTree(root)) > 0)) ? rotateLL(root) : rotateLR(root);
+        return root;
     }
 
-    if (heightDiff < -1) {
-        if (getHeightDifferent(GetRightSubTree(root)) < 0) {
-            root = rotateRR(root);
-        } else {
-            root = rotateRL(root);
-        }
-    }
-
+    root = (getHeightDifferent(GetRightSubTree(root)) < 0) ? rotateRR(root) : rotateRL(root);
     return root;
 }
 

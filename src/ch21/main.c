@@ -7,48 +7,51 @@
 #define space 5
 
 typedef BinaryTreeNode node;
-//secondary function
-void draw_tree_hor2(node *tree, int distance)
-{
-    // stopping condition
-    if (tree== NULL)
+
+void draw_tree_hor2(node *tree, int distance){
+    if (tree== NULL) {
         return;
+    }
 
-    // increase spacing
     distance += space;
-
-    // start with right node
     draw_tree_hor2(tree->right, distance);
 
-    // print root after spacing
-
     printf("\n");
-
     for (int i = space; i < distance; i++)
         printf(" ");
 
     printf("%d\n", *( (int *) tree->data));
 
-    // go to left node
     draw_tree_hor2(tree->left, distance);
 }
 
-//primary fuction
-void draw_tree_hor(node *tree)
-{
+void draw_tree_hor(node *tree){
     draw_tree_hor2(tree, 0);
 }
 
+
+void showData(AVLData pData) {
+    int data = *( (int *) pData);
+    printf("%d ", data);
+}
+
+void showTree(AVLTree * pTree) {
+    if (pTree->root == NULL) {
+        return;
+    }
+
+    printf("트리 상태 : ");
+    printf("루트 (%p %d) ", pTree->root, *( (int *) GetData(pTree->root)));
+    AVLTShowAll(pTree, showData);
+    printf("\n");
+    draw_tree_hor(pTree->root);
+    printf("\n\n");
+}
 
 int compareIntData(void * pData1, void * pData2) {
     int data1 = *( (int *) pData1);
     int data2 = *( (int *) pData2);
     return data1-data2;
-}
-
-void ShowData(AVLData pData) {
-    int data = *( (int *) pData);
-    printf("%d ", data);
 }
 
 int main() {
@@ -63,41 +66,10 @@ int main() {
     
     for (int i=0; i<insertSize; i++) {
         AVLTInsert(&avlTree, &insert[i]);
-
-        printf("트리 상태 : ");
-        printf("루트 (%p %d) ", avlTree.root, *((int *)avlTree.root->data));
-        AVLTShowAll(&avlTree, ShowData);
-        printf("\n");
-        draw_tree_hor(avlTree.root);
-        printf("\n\n");
+        showTree(&avlTree);
     }
 
-    printf("height: %d ", getHeight(avlTree.root));
-    int leftData = *((int *) avlTree.root->left->left->data);
-    printf("left: %d  %d ", getHeight(avlTree.root->left), leftData);
-
-    int rightData = *((int *) avlTree.root->right->right->data);
-    printf("right: %d %d\n\n", getHeight(avlTree.root->right), rightData);
-    
     for (int i=0; i<targetSize; i++) {
-        int searchResult = AVLTSearch(&avlTree, &target[i]);
-
-        if (searchResult == 0) {
-            printf("탐색 실패\n");
-        } else {
-            printf("탐색 성공 : %d\n", target[i]);
-        }
-    }
-    printf("\n\n");
-
-    for (int i=0; i<targetSize; i++) {
-        printf("트리 상태 : ");
-        printf("루트 (%p %d) ", avlTree.root, *((int *)avlTree.root->data));
-        AVLTShowAll(&avlTree, ShowData);
-        printf("\n");
-        draw_tree_hor(avlTree.root);
-        printf("\n\n");
-
         int removeResult = AVLTRemove(&avlTree, &target[i]);
 
         if (removeResult == 0) {
@@ -105,6 +77,8 @@ int main() {
         } else {
             printf("삭제 성공 : %d\n", target[i]);
         }
+
+        showTree(&avlTree);
     }
 
     AVLTDestroy(&avlTree);
